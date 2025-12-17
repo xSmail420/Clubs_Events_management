@@ -1,0 +1,24 @@
+#ClubPI Application Configuration
+#Thu Apr 24 13:59:38 WEST 2025
+smtp.password=
+email.from.name=Club PI
+smtp.port=2525
+smtp.host=sandbox.smtp.mailtrap.io
+email.from.address=admin@gmail.com
+smtp.username=
+
+# Hugging Face API Configuration
+huggingface.api.key=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
+huggingface.text.model=facebook/bart-large-mnli
+huggingface.violence.model=Dabid/abusive-tagalog-profanity-detection
+huggingface.image.model=Falconsai/nsfw_image_detection
+huggingface.threshold=0.75
+
+# Content Validation Settings
+content.validation.fallback=true
+content.validation.async=true
+
+# Set to false to disable content validation completely
+content.validation.enabled=false
+
+OPENAI_API_KEY=

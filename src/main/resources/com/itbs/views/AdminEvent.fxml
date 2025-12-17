@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane stylesheets="@../styles/uniclubs.css,@../styles/no-scrollbar.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itbs.controllers.AdminEvent">
+    <left>
+        <!-- Sidebar Navigation - From paste.txt -->
+        <VBox fx:id="sidebar" alignment="TOP_CENTER" prefWidth="250.0" spacing="10.0" styleClass="sidebar">
+            <padding>
+                <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
+            </padding>
+
+            <!-- Application Logo -->
+            <HBox alignment="CENTER" spacing="10.0" styleClass="logo-container">
+                <Label styleClass="logo-text" text="UNICLUBS">
+                    <font>
+                        <Font name="System Bold" size="20.0" />
+                    </font>
+                </Label>
+            </HBox>
+
+            <Separator>
+                <VBox.margin>
+                    <Insets bottom="20.0" top="20.0" />
+                </VBox.margin>
+            </Separator>
+
+            <!-- Admin Info -->
+            <Label fx:id="adminNameLabel" styleClass="admin-name" text="Admin Name">
+                <font>
+                    <Font name="System Bold" size="16.0" />
+                </font>
+            </Label>
+            <Label styleClass="admin-role" text="Administrator" />
+
+            <Separator>
+                <VBox.margin>
+                    <Insets bottom="20.0" top="20.0" />
+                </VBox.margin>
+            </Separator>
+
+            <!-- Menu Items -->
+            <VBox spacing="5.0" VBox.vgrow="ALWAYS">
+                <Button fx:id="userManagementButton" onAction="#showUserManagement" alignment="BASELINE_LEFT" maxWidth="Infinity" styleClass="sidebar-button" text="User Management">
+                    <graphic>
+                        <Label text="👤" />
+                    </graphic>
+                </Button>
+
+                <Button fx:id="clubManagementButton" onAction="#showClubManagement" alignment="BASELINE_LEFT" maxWidth="Infinity" styleClass="sidebar-button" text="Club Management">
+                    <graphic>
+                        <Label text="🏛" />
+                    </graphic>
+                </Button>
+
+                <!-- Event Management dropdown menu -->
+                <VBox spacing="2.0">
+                    <Button fx:id="eventManagementButton" onAction="#showEventManagement" alignment="BASELINE_LEFT" maxWidth="Infinity" styleClass="sidebar-button, active" text="Event Management">
+                        <graphic>
+                            <Label text="📅" />
+                        </graphic>
+                    </Button>
+                    
+                    <!-- Sous-menu Event Management -->
+                    <VBox fx:id="eventsSubMenu" spacing="2.0" style="-fx-padding: 0 0 0 30;" visible="true" managed="true">
+                        <Button onAction="#navigateToEventList" styleClass="sidebar-button, active" text="Event Management" maxWidth="Infinity" alignment="BASELINE_LEFT">
+                            <graphic>
+                                <Label text="📅" />
+                            </graphic>
+                        </Button>
+                        
+                        <Button onAction="#navigateToCategoryManagement" styleClass="sidebar-button" text="Category Management" maxWidth="Infinity" alignment="BASELINE_LEFT">
+                            <graphic>
+                                <Label text="🗂" />
+                            </graphic>
+                        </Button>
+                    </VBox>
+                </VBox>
+
+                <Button fx:id="productOrdersButton" onAction="#showProductOrders" alignment="BASELINE_LEFT" maxWidth="Infinity" styleClass="sidebar-button" text="Products &amp; Orders">
+                    <graphic>
+                        <Label text="🛒" />
+                    </graphic>
+                </Button>
+
+                <Button fx:id="competitionButton" onAction="#showCompetition" alignment="BASELINE_LEFT" maxWidth="Infinity" styleClass="sidebar-button" text="Competition &amp; Season">
+                    <graphic>
+                        <Label text="🏆" />
+                    </graphic>
+                </Button>
+
+                <!-- Survey Management dropdown menu -->
+                <VBox spacing="2.0">
+                    <Button fx:id="surveyButton" onAction="#showSurvey" alignment="BASELINE_LEFT" maxWidth="Infinity" styleClass="sidebar-button" text="Survey Management">
+                        <graphic>
+                            <Label text="📊" />
+                        </graphic>
+                    </Button>
+                    
+                    <!-- Sous-menu Survey Management -->
+                    <VBox fx:id="surveySubMenu" spacing="2.0" style="-fx-padding: 0 0 0 30;" visible="false" managed="false">
+                        <Button fx:id="pollsManagementBtn" onAction="#navigateToPollsManagement" alignment="BASELINE_LEFT" maxWidth="Infinity" styleClass="sidebar-button" text="Poll Management">
+                            <graphic>
+                                <Label text="📋" />
+                            </graphic>
+                        </Button>
+                        
+                        <Button fx:id="commentsManagementBtn" onAction="#navigateToCommentsManagement" alignment="BASELINE_LEFT" maxWidth="Infinity" styleClass="sidebar-button" text="Comment Management">
+                            <graphic>
+                                <Label text="💬" />
+                            </graphic>
+                        </Button>
+                    </VBox>
+                </VBox>
+
+                <VBox.margin>
+                    <Insets bottom="20.0" />
+                </VBox.margin>
+            </VBox>
+
+            <!-- Bottom Menu Options -->
+            <VBox spacing="5.0">
+                <Button fx:id="profileButton" onAction="#navigateToProfile" alignment="BASELINE_LEFT" maxWidth="Infinity" styleClass="sidebar-button" text="My Profile">
+                    <graphic>
+                        <Label text="👤" />
+                    </graphic>
+                </Button>
+
+                <Button fx:id="logoutButton" onAction="#handleLogout" alignment="BASELINE_LEFT" maxWidth="Infinity" styleClass="sidebar-button, sidebar-button-logout" text="Logout">
+                    <graphic>
+                        <Label text="🚪" />
+                    </graphic>
+                </Button>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <!-- Main Content Area -->
+        <BorderPane fx:id="contentArea" style="-fx-background-color: #f6f9fe;">
+            <top>
+                <!-- Header -->
+                <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="dashboard-header">
+                    <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                    </padding>
+
+                    <Label styleClass="dashboard-title" text="Event Management">
+                        <font>
+                            <Font name="System Bold" size="30.0" />
+                        </font>
+                    </Label>
+
+                    <HBox alignment="CENTER_RIGHT" spacing="15.0" HBox.hgrow="ALWAYS">
+                        <!-- Search Box -->
+                        <TextField fx:id="searchField" prefWidth="250.0" promptText="Search events..." />
+
+                        <Circle fill="#1e90ff" radius="18" />
+                    </HBox>
+                </HBox>
+            </top>
+
+            <center>
+                <!-- Main Content from paste-2.txt -->
+                <VBox style="-fx-padding: 30 40;">
+                    <!-- Page Info -->
+                    <HBox alignment="CENTER_LEFT" spacing="15">
+                        <VBox>
+                     <Label style="-fx-text-fill: #666666;" text="Events">
+                        <font>
+                           <Font name="Arial Bold" size="23.0" />
+                        </font>
+                     </Label>
+                            <Label prefHeight="0.0" prefWidth="406.0" style="-fx-text-fill: #666666;" text="Manage all your club events from here">
+                                <font>
+                                    <Font name="Arial" size="23.0" />
+                                </font>
+                            </Label>
+                        </VBox>
+
+                        <Region HBox.hgrow="ALWAYS" />
+
+                        <Label fx:id="dateLabel" style="-fx-text-fill: #666666;" text="Today: Tuesday, April 15, 2025">
+                            <font>
+                                <Font name="Arial Italic" size="14" />
+                            </font>
+                        </Label>
+                    </HBox>
+
+                    <!-- Stats Cards -->
+                    <HBox spacing="20" style="-fx-padding: 30 0 20 0;">
+                        <!-- Stats Card 1 -->
+                        <VBox maxWidth="200" minWidth="200" prefWidth="200" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" HBox.hgrow="ALWAYS">
+                            <Label prefHeight="17.0" prefWidth="94.0" style="-fx-text-fill: #666666;" text="Total Events">
+                                <font>
+                                    <Font name="Arial" size="14" />
+                                </font>
+                            </Label>
+                            <Label fx:id="totalEventsLabel" style="-fx-text-fill: #040f71; -fx-font-weight: bold;" text="0">
+                                <font>
+                                    <Font name="Arial Bold" size="28" />
+                                </font>
+                            </Label>
+                        </VBox>
+
+                        <!-- Stats Card 2 -->
+                        <VBox maxWidth="200" minWidth="200" prefWidth="200" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" HBox.hgrow="ALWAYS">
+                            <Label style="-fx-text-fill: #666666;" text="Open Events">
+                                <font>
+                                    <Font name="Arial" size="14" />
+                                </font>
+                            </Label>
+                            <Label fx:id="openEventsLabel" style="-fx-text-fill: #28a745; -fx-font-weight: bold;" text="0">
+                                <font>
+                                    <Font name="Arial Bold" size="28" />
+                                </font>
+                            </Label>
+                        </VBox>
+
+                        <!-- Stats Card 3 -->
+                        <VBox maxWidth="200" minWidth="200" prefWidth="200" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" HBox.hgrow="ALWAYS">
+                            <Label style="-fx-text-fill: #666666;" text="Upcoming This Month">
+                                <font>
+                                    <Font name="Arial" size="14" />
+                                </font>
+                            </Label>
+                            <Label fx:id="upcomingEventsLabel" style="-fx-text-fill: #fd7e14; -fx-font-weight: bold;" text="0">
+                                <font>
+                                    <Font name="Arial Bold" size="28" />
+                                </font>
+                            </Label>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Filter and Actions Bar -->
+                    <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 15 0;">
+                        <ComboBox fx:id="categoryFilter" prefWidth="150.0" promptText="Category" style="-fx-background-color: white; -fx-border-color: #dddddd; -fx-border-radius: 5; -fx-background-radius: 5;">
+                            <HBox.margin>
+                                <Insets right="5" />
+                            </HBox.margin>
+                        </ComboBox>
+
+                        <ComboBox fx:id="clubFilter" prefWidth="150.0" promptText="Club" style="-fx-background-color: white; -fx-border-color: #dddddd; -fx-border-radius: 5; -fx-background-radius: 5;">
+                            <HBox.margin>
+                                <Insets right="5" />
+                            </HBox.margin>
+                        </ComboBox>
+
+                        <ComboBox fx:id="statusFilter" prefWidth="120.0" promptText="Status" style="-fx-background-color: white; -fx-border-color: #dddddd; -fx-border-radius: 5; -fx-background-radius: 5;">
+                        </ComboBox>
+
+                        <Region HBox.hgrow="ALWAYS" />
+
+                        <Button fx:id="refreshButton" onAction="#handleRefresh" style="-fx-background-color: #eef2f7; -fx-text-fill: #666666; -fx-background-radius: 5; -fx-padding: 8 15;">
+                            <graphic>
+                                <Label style="-fx-text-fill: #666666;" text="↻ Refresh">
+                                    <font>
+                                        <Font name="Arial" size="13" />
+                                    </font>
+                                </Label>
+                            </graphic>
+                        </Button>
+                    </HBox>
+
+                    <!-- Events List View -->
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" VBox.vgrow="ALWAYS">
+                  <Label style="-fx-text-fill: #666666;" text="Events List">
+                     <font>
+                        <Font name="Arial Bold" size="24.0" />
+                     </font>
+                  </Label>
+
+                        <ListView fx:id="eventListView" style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-color: #eeeeee; -fx-border-radius: 5; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" VBox.vgrow="ALWAYS">
+                        </ListView>
+
+                        <!-- Pagination Area -->
+                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 15 0 0 0;">
+                            <Label fx:id="paginationInfoLabel" style="-fx-text-fill: #666666;" text="Showing all events">
+                                <font>
+                                    <Font name="Arial" size="13" />
+                                </font>
+                            </Label>
+
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <!-- Pagination controls could be added here if needed -->
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </center>
+
+            <bottom>
+                <!-- Footer - From paste.txt -->
+                <HBox alignment="CENTER" styleClass="dashboard-footer">
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                    <Label styleClass="footer-text" text="© 2024 UNICLUBS - Admin Dashboard v1.0" />
+                </HBox>
+            </bottom>
+        </BorderPane>
+    </center>
+</BorderPane>
