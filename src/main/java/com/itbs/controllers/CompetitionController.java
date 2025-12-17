@@ -155,6 +155,13 @@ public class CompetitionController {
     @FXML
     private Button logoutButton;
 
+    @FXML
+    private StackPane clubsContainer;
+    @FXML
+    private Button clubsButton;
+    @FXML
+    private VBox clubsDropdown;
+
     // Pagination labels
     @FXML
     private Label currentPageLabel;
@@ -229,6 +236,11 @@ public class CompetitionController {
             // Apply custom styling
             applyCustomStyling();
 
+            if (clubsDropdown != null) {
+                clubsDropdown.setVisible(false);
+                clubsDropdown.setManaged(false);
+            }
+
             // Ensure form is properly styled when shown
             Platform.runLater(() -> {
                 System.out.println("Applying styles to form elements");
@@ -241,6 +253,80 @@ public class CompetitionController {
             showAlert(AlertType.ERROR, "Initialization Error",
                     "Failed to initialize mission management", e.getMessage());
         }
+    }
+
+    @FXML
+    private void showClubsDropdown() {
+        if (clubsDropdown != null) {
+            clubsDropdown.setVisible(true);
+            clubsDropdown.setManaged(true);
+        }
+    }
+    
+    @FXML
+    private void hideClubsDropdown() {
+        if (clubsDropdown != null) {
+            clubsDropdown.setVisible(false);
+            clubsDropdown.setManaged(false);
+        }
+    }
+
+    @FXML
+    public void navigateToClubs() throws IOException {
+        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/ShowClubs.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) (contentArea != null ? contentArea.getScene().getWindow()
+                : (adminNameLabel != null ? adminNameLabel.getScene().getWindow() : null));
+
+        if (stage != null) {
+            // Use the utility method for consistent setup
+            MainApp.setupStage(stage, root, "Clubs - UNICLUBS", true);
+
+            stage.show();
+        } else {
+            // If we can't get the stage from the UI elements, create a new one
+            stage = new Stage();
+
+            // Use the utility method for consistent setup
+            MainApp.setupStage(stage, root, "Clubs - UNICLUBS", true);
+
+            stage.show();
+
+            // Close any existing windows
+            if (contentArea != null && contentArea.getScene() != null &&
+                    contentArea.getScene().getWindow() != null) {
+                ((Stage) contentArea.getScene().getWindow()).close();
+            }
+        }
+    }
+    
+    @FXML
+    private void navigateToMyClub() throws IOException {
+        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/MyClubView.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) (contentArea != null ? contentArea.getScene().getWindow()
+                : (adminNameLabel != null ? adminNameLabel.getScene().getWindow() : null));
+
+        if (stage != null) {
+            // Use the utility method for consistent setup
+            MainApp.setupStage(stage, root, "My Club - UNICLUBS", true);
+
+            stage.show();
+        } else {
+            // If we can't get the stage from the UI elements, create a new one
+            stage = new Stage();
+
+            // Use the utility method for consistent setup
+            MainApp.setupStage(stage, root, "My Club - UNICLUBS", true);
+
+            stage.show();
+
+            // Close any existing windows
+            if (contentArea != null && contentArea.getScene() != null &&
+                    contentArea.getScene().getWindow() != null) {
+                ((Stage) contentArea.getScene().getWindow()).close();
+            }
+        }   
     }
 
     private void navigateToLogin() throws IOException {

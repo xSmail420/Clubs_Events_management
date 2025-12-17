@@ -166,7 +166,7 @@ public class ParticipantController {
 
         try {
             // Use the participant's ID (primary key) to delete the record
-            boolean deleted = participantService.supprimer(selectedParticipant.getId());
+            boolean deleted = participantService.supprimer2(selectedParticipant.getId());
             if (deleted) {
                 refreshParticipantList(); // Rafraîchir la liste des participants
                 clearForm();

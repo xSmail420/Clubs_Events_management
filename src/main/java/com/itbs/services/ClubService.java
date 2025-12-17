@@ -312,4 +312,93 @@ public class ClubService {
                 : null);
         return president;
     }
+
+
+    // Add these methods to your existing ClubService class
+
+/**
+ * Get club by president ID
+ */
+    public Club getClubByPresidentId1(int presidentId) throws SQLException {
+        String query = "SELECT * FROM club WHERE president_id = ?";
+        
+        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
+            stmt.setInt(1, presidentId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return extractClubFromResultSet1(rs);
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Get club by ID
+     */
+    public Club getClubById1(int clubId) throws SQLException {
+        String query = "SELECT * FROM club WHERE id = ?";
+        
+        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
+            stmt.setInt(1, clubId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return extractClubFromResultSet1(rs);
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Extract Club from ResultSet
+     */
+    private Club extractClubFromResultSet1(ResultSet rs) throws SQLException {
+        Club club = new Club();
+        
+        club.setId(rs.getInt("id"));
+        club.setNomC(rs.getString("nom_c"));
+        club.setDescription(rs.getString("description"));
+        club.setLogo(rs.getString("logo"));
+        club.setImage(rs.getString("image"));
+        club.setStatus(rs.getString("status"));
+        club.setPoints(rs.getInt("points"));
+        club.setPresidentId(rs.getInt("president_id"));
+        
+        Timestamp dateCreation = rs.getTimestamp("date_creation");
+        if (dateCreation != null) {
+            club.setDateCreation(dateCreation.toLocalDateTime());
+        }
+        
+        return club;
+    }
+
+    /**
+     * Get clubs by popularity (number of members)
+     */
+    public List<Object[]> getClubsByPopularity1() throws SQLException {
+        List<Object[]> stats = new ArrayList<>();
+        String query = "SELECT c.nom_c, COUNT(pm.user_id) as member_count " +
+                    "FROM club c " +
+                    "LEFT JOIN participation_membre pm ON c.id = pm.club_id " +
+                    "WHERE pm.statut = 'accepte' OR pm.statut IS NULL " +
+                    "GROUP BY c.id, c.nom_c " +
+                    "ORDER BY member_count DESC " +
+                    "LIMIT 10";
+        
+        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Object[] row = new Object[2];
+                row[0] = rs.getString("nom_c");
+                row[1] = rs.getInt("member_count");
+                stats.add(row);
+            }
+        }
+        
+        return stats;
+    }
 }

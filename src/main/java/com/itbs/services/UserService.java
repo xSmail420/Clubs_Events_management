@@ -1,12 +1,14 @@
 // Path: src/main/java/services/UserService.java
 package com.itbs.services;
 
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
 import com.itbs.models.User;
 
+import com.itbs.utils.DataSource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -22,6 +24,7 @@ public class UserService implements Service<User>, AutoCloseable {
 
     private static EntityManagerFactory emf;
     private final EntityManager em;
+    private final Connection connection;
 
     // Remove the static initializer block and replace with lazy initialization
     private static synchronized EntityManagerFactory getEntityManagerFactory() {
@@ -41,6 +44,7 @@ public class UserService implements Service<User>, AutoCloseable {
     public UserService() {
         try {
             em = getEntityManagerFactory().createEntityManager();
+            this.connection = DataSource.getInstance().getCnx();
             System.out.println("EntityManager created successfully");
         } catch (PersistenceException e) {
             System.err.println("Failed to initialize persistence: " + e.getMessage());
@@ -222,4 +226,79 @@ public class UserService implements Service<User>, AutoCloseable {
                     .executeUpdate();
         });
     }
+
+
+    /**
+     * Get user by ID
+     */
+    public User getUserById(int userId) throws SQLException {
+        String query = "SELECT * FROM user WHERE id = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return extractUserFromResultSet(rs);
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Extract User from ResultSet - public method for use in other services
+     */
+    public User extractUserFromResultSet(ResultSet rs) throws SQLException {
+        User user = new User();
+        
+        user.setId(rs.getInt("id"));
+        user.setFirstName(rs.getString("prenom"));
+        user.setLastName(rs.getString("nom"));
+        user.setEmail(rs.getString("email"));
+        user.setPassword(rs.getString("password"));
+        user.setPhone(rs.getString("tel"));
+        user.setProfilePicture(rs.getString("profile_picture"));
+        user.setStatus(rs.getString("status"));
+        user.setVerified(rs.getBoolean("is_verified"));
+        user.setWarningCount(rs.getInt("warning_count"));
+        
+        // Handle role enum
+        String roleStr = rs.getString("role");
+        if (roleStr != null) {
+            try {
+                user.setRole(com.itbs.models.enums.RoleEnum.valueOf(roleStr));
+            } catch (IllegalArgumentException e) {
+                // Default to MEMBRE if role is invalid
+                user.setRole(com.itbs.models.enums.RoleEnum.MEMBRE);
+            }
+        }
+        
+        // Handle timestamps
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        if (createdAt != null) {
+            user.setCreatedAt(createdAt.toLocalDateTime());
+        }
+        
+        Timestamp lastLoginAt = rs.getTimestamp("last_login_at");
+        if (lastLoginAt != null) {
+            user.setLastLoginAt(lastLoginAt.toLocalDateTime());
+        }
+        
+        Timestamp confirmationExpiry = rs.getTimestamp("confirmation_token_expires_at");
+        if (confirmationExpiry != null) {
+            user.setConfirmationTokenExpiresAt(confirmationExpiry.toLocalDateTime());
+        }
+        
+        Timestamp lastCodeSent = rs.getTimestamp("last_code_sent_time");
+        if (lastCodeSent != null) {
+            user.setLastCodeSentTime(lastCodeSent.toLocalDateTime());
+        }
+        
+        user.setConfirmationToken(rs.getString("confirmation_token"));
+        user.setVerificationAttempts(rs.getInt("verification_attempts"));
+        
+        return user;
+    }
+
 }

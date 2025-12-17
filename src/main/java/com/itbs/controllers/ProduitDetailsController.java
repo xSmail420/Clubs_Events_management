@@ -59,7 +59,7 @@ public class ProduitDetailsController implements Initializable {
      */
     private void setupProductDetails() {
         lblNomProduit.setText(selectedProduit.getNomProd());
-        lblPrix.setText(String.format("%.2f €", selectedProduit.getPrix()));
+        lblPrix.setText(String.format("%.2f tnd", selectedProduit.getPrix()));
         lblDescription.setText(selectedProduit.getDescProd());
 
         // Afficher la quantité disponible

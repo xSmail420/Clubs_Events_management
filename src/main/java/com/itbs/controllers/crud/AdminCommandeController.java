@@ -202,7 +202,7 @@ public class AdminCommandeController implements Initializable {
                 if (empty || total == null) {
                     setText(null);
                 } else {
-                    setText(String.format("%.2f €", total));
+                    setText(String.format("%.2f tnd", total));
                 }
             }
         });
@@ -458,7 +458,7 @@ public class AdminCommandeController implements Initializable {
         message.setSubject("Confirmation de votre commande #" + commande.getId());
         message.setText("Bonjour " + commande.getUser().getFirstName() + ",\n\n" +
                 "Votre commande #" + commande.getId() + " a été validée avec succès.\n" +
-                "Montant total : " + String.format("%.2f €", commande.getTotal()) + "\n" +
+                "Montant total : " + String.format("%.2f tnd", commande.getTotal()) + "\n" +
                 "Date de commande : " + commande.getDateComm() + "\n\n" +
                 "Merci de votre confiance !\n" +
                 "L'équipe de gestion");

@@ -23,7 +23,7 @@
       <VBox styleClass="header-section">
          <children>
             <!-- Header with Navbar from home.fxml -->
-            <HBox styleClass="header" alignment="CENTER_LEFT" spacing="20">
+            <HBox viewOrder="-1000" styleClass="header" alignment="CENTER_LEFT" spacing="20">
                 <padding>
                     <Insets top="10" right="20" bottom="10" left="20"/>
                 </padding>
@@ -32,7 +32,7 @@
                     <Image url="@../images/logo.png"/>
                 </ImageView>
                 
-                <HBox spacing="25" alignment="CENTER" HBox.hgrow="ALWAYS" styleClass="nav-container">
+            <HBox spacing="25" alignment="CENTER" HBox.hgrow="ALWAYS" styleClass="nav-container">
             <Button text="Home" styleClass="nav-button" onAction="#navigateToHome"/>
             
             <!-- Add a direct Polls button to the main navbar -->

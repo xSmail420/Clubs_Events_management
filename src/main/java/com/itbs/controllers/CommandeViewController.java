@@ -53,6 +53,12 @@ public class CommandeViewController implements Initializable {
     @FXML private Label shippingLabel;
     @FXML private Label totalLabel;
     @FXML private Button checkoutButton;
+    @FXML
+    private StackPane clubsContainer;
+    @FXML
+    private Button clubsButton;
+    @FXML
+    private VBox clubsDropdown;
     
     private CommandeService commandeService;
     private Commande currentCart;
@@ -112,6 +118,11 @@ public class CommandeViewController implements Initializable {
             profileDropdown.setVisible(false);
             profileDropdown.setManaged(false);
         }
+
+        if (clubsDropdown != null) {
+                clubsDropdown.setVisible(false);
+                clubsDropdown.setManaged(false);
+            }
         
         // Setup table columns
         setupTableColumns();
@@ -176,7 +187,7 @@ public class CommandeViewController implements Initializable {
                 if (empty) {
                     setText(null);
                 } else {
-                    setText(String.format("€%.2f", price));
+                    setText(String.format("tnd%.2f", price));
                 }
             }
         });
@@ -218,7 +229,7 @@ public class CommandeViewController implements Initializable {
                 if (empty) {
                     setText(null);
                 } else {
-                    setText(String.format("€%.2f", total));
+                    setText(String.format("tnd%.2f", total));
                 }
             }
         });
@@ -329,9 +340,9 @@ public class CommandeViewController implements Initializable {
         double total = subtotal + shipping;
         
         // Update labels
-        subtotalLabel.setText(String.format("€%.2f", subtotal));
-        shippingLabel.setText(String.format("€%.2f", shipping));
-        totalLabel.setText(String.format("€%.2f", total));
+        subtotalLabel.setText(String.format("tnd%.2f", subtotal));
+        shippingLabel.setText(String.format("tnd%.2f", shipping));
+        totalLabel.setText(String.format("tnd%.2f", total));
     }
     
     @FXML
@@ -403,8 +414,32 @@ public class CommandeViewController implements Initializable {
     }
     
     @FXML
+    private void showClubsDropdown() {
+        if (clubsDropdown != null) {
+            clubsDropdown.setVisible(true);
+            clubsDropdown.setManaged(true);
+        }
+    }
+    
+    @FXML
+    private void hideClubsDropdown() {
+        if (clubsDropdown != null) {
+            clubsDropdown.setVisible(false);
+            clubsDropdown.setManaged(false);
+        }
+    }
+
+    @FXML
     public void navigateToClubs() throws IOException {
         FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/ShowClubs.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) userNameLabel.getScene().getWindow();
+        stage.getScene().setRoot(root);
+    }
+    
+    @FXML
+    private void navigateToMyClub() throws IOException {
+        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/MyClubView.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) userNameLabel.getScene().getWindow();
         stage.setScene(new Scene(root));

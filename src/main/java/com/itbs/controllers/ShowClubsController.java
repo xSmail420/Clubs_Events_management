@@ -486,7 +486,11 @@ public class ShowClubsController implements Initializable {
             // Navigate to the user's club page
             // Since ClubDetailsController might not exist or have the expected method,
             // we'll just navigate to clubs for now
-            navigateToClubs();
+            // navigateToClubs();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/itbs/views/MyClubView.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) userProfileContainer.getScene().getWindow();
+            stage.getScene().setRoot(root);
         } else {
             // User doesn't have a club, navigate to clubs list
             navigateToClubs();

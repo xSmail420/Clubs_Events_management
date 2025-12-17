@@ -1145,7 +1145,7 @@ public class AdminProduitController implements Initializable {
         // Add components to grid
         grid.add(new Label("Nom:"), 0, 0);
         grid.add(nomField, 1, 0);
-        grid.add(new Label("Prix (€):"), 0, 1);
+        grid.add(new Label("Prix (tnd):"), 0, 1);
         grid.add(prixField, 1, 1);
         grid.add(new Label("Quantité:"), 0, 2);
         grid.add(quantityField, 1, 2);
@@ -1298,7 +1298,7 @@ public class AdminProduitController implements Initializable {
         // Add components to grid
         grid.add(new Label("Nom:"), 0, 0);
         grid.add(nomField, 1, 0);
-        grid.add(new Label("Prix (€):"), 0, 1);
+        grid.add(new Label("Prix (tnd):"), 0, 1);
         grid.add(prixField, 1, 1);
         grid.add(new Label("Quantité:"), 0, 2);
         grid.add(quantityField, 1, 2);

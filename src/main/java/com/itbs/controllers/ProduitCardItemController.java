@@ -48,7 +48,7 @@ public class ProduitCardItemController {
         if (produit != null) {
             lblNom.setText(produit.getNomProd());
             lblDescription.setText(produit.getDescProd());
-            lblPrix.setText(String.format("%.2f €", produit.getPrix()));
+            lblPrix.setText(String.format("%.2f tnd", produit.getPrix()));
             lblQuantity.setText("Stock: " + produit.getQuantity());
             
             if (produit.getClub() != null) {

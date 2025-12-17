@@ -31,7 +31,7 @@
             <top>
                 <VBox>
                     <!-- Navigation Header -->
-                    <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header">
+                    <HBox alignment="CENTER_LEFT" spacing="20" viewOrder="-1000" styleClass="header">
                         <padding>
                             <Insets bottom="10" left="20" right="20" top="10" />
                         </padding>

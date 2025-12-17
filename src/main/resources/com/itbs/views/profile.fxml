@@ -16,7 +16,7 @@
 
 <BorderPane  stylesheets="@../styles/uniclubs.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.itbs.controllers.ProfileController">
    <top>
-      <HBox alignment="CENTER_LEFT" styleClass="header">
+      <HBox alignment="CENTER_LEFT" viewOrder="-1000" styleClass="header">
          <padding>
             <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
          </padding>

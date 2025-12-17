@@ -6,215 +6,335 @@ import com.itbs.models.User;
 import com.itbs.utils.DataSource;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ParticipationMembreService {
-
-    private final Connection cnx;
-    private final UserService userService = new UserService();
-    private final ClubService clubService = new ClubService();
+    
+    private final Connection connection;
+    private final UserService userService;
+    private final ClubService clubService;
 
     public ParticipationMembreService() {
-        this.cnx = DataSource.getInstance().getCnx();
+        this.connection = DataSource.getInstance().getCnx();
+        this.userService = new UserService();
+        this.clubService = new ClubService();
     }
 
-    public void ajouter(ParticipationMembre p) {
-        String req = "INSERT INTO participation_membre(user_id, club_id, date_request, statut, description) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement pst = cnx.prepareStatement(req)) {
-            pst.setInt(1, p.getUser().getId());
-            pst.setInt(2, p.getClub().getId());
-            pst.setTimestamp(3, Timestamp.valueOf(p.getDateRequest()));
-            pst.setString(4, p.getStatut());
-            pst.setString(5, p.getDescription());
-            pst.executeUpdate();
-            System.out.println("Participant ajouté avec succès !");
-        } catch (SQLException e) {
-            System.err.println("Erreur d'ajout : " + e.getMessage());
-        }
-    }
-
-    public void modifier(ParticipationMembre p) {
-        String req = "UPDATE participation_membre SET user_id=?, club_id=?, date_request=?, statut=?, description=? WHERE id=?";
-        try (PreparedStatement pst = cnx.prepareStatement(req)) {
-            pst.setInt(1, p.getId());
-            pst.setInt(2, p.getClub().getId());
-            pst.setTimestamp(3, Timestamp.valueOf(p.getDateRequest()));
-            pst.setString(4, p.getStatut());
-            pst.setString(5, p.getDescription());
-            pst.setInt(6, p.getId());
-            pst.executeUpdate();
-            System.out.println("Participant modifié avec succès !");
-        } catch (SQLException e) {
-            System.err.println("Erreur de modification : " + e.getMessage());
-        }
-    }
-
-    public boolean supprimer(int id) throws SQLException {
-        String req = "DELETE FROM participation_membre WHERE id=?";
-        try (PreparedStatement pst = cnx.prepareStatement(req)) {
-            pst.setInt(1, id);
-            int rowsAffected = pst.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Participant supprimé avec succès !");
-                return true;
-            } else {
-                System.out.println("Aucun participant trouvé avec l'ID: " + id);
-                return false;
-            }
-        } catch (SQLException e) {
-            System.err.println("Erreur de suppression : " + e.getMessage());
-            throw e;
-        }
-    }
-
-    public List<ParticipationMembre> afficher() throws SQLException {
-        List<ParticipationMembre> list = new ArrayList<>();
-        String req = "SELECT pm.id, pm.user_id, pm.club_id, pm.date_request, pm.statut, pm.description, " +
-                "c.id AS club_id, c.president_id, c.nom_c, c.description AS club_description, c.status, c.image, c.points, "
-                +
-                "u.nom AS user_name " +
-                "FROM participation_membre pm " +
-                "LEFT JOIN club c ON pm.club_id = c.id " +
-                "LEFT JOIN user u ON pm.user_id = u.id"; // Adjust 'users' and 'nom' to match your schema
-        try (PreparedStatement pst = cnx.prepareStatement(req);
-                ResultSet rs = pst.executeQuery()) {
-
+    /**
+     * Get all pending participation requests for a specific club
+     */
+    public List<ParticipationMembre> getPendingRequestsByClubId(int clubId) throws SQLException {
+        List<ParticipationMembre> requests = new ArrayList<>();
+        String query = "SELECT * FROM participation_membre WHERE club_id = ? AND statut = 'en_attente' ORDER BY date_request DESC";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, clubId);
+            ResultSet rs = stmt.executeQuery();
+            
             while (rs.next()) {
-                ParticipationMembre p = new ParticipationMembre();
-                p.setId(rs.getInt("id"));
-
-                // Create User object
-                User user = new User();
-                user.setId(rs.getInt("user_id"));
-                // Set name if available
-                if (rs.getString("user_name") != null) {
-                    user.setFirstName(rs.getString("user_name"));
-                }
-                p.setUser(user);
-
-                // Populate the associated Club
-                Club club = new Club();
-                club.setId(rs.getInt("club_id"));
-                club.setPresidentId(rs.getInt("president_id"));
-                club.setNomC(rs.getString("nom_c"));
-                club.setDescription(rs.getString("club_description"));
-                club.setStatus(rs.getString("status"));
-                club.setImage(rs.getString("image"));
-                club.setPoints(rs.getInt("points"));
-                p.setClub(club);
-
-                p.setDateRequest(rs.getTimestamp("date_request").toLocalDateTime());
-                p.setStatut(rs.getString("statut"));
-                p.setDescription(rs.getString("description"));
-
-                list.add(p);
+                ParticipationMembre participation = extractFromResultSet(rs);
+                requests.add(participation);
             }
-
-            System.out.println("Nombre de participants récupérés : " + list.size());
-            return list;
-        } catch (SQLException e) {
-            System.err.println("Erreur d'affichage : " + e.getMessage());
-            throw e;
         }
-    }
-
-    public List<ParticipationMembre> getAllParticipants() throws SQLException {
-        return afficher();
+        
+        return requests;
     }
 
     /**
-     * Récupère les participations par club avec un statut donné
-     * 
-     * @param clubId id du club
-     * @param statut statut des participations à récupérer
-     * @return liste des participations
-     * @throws SQLException en cas d'erreur SQL
+     * Get all accepted members for a specific club
      */
-    public List<ParticipationMembre> getParticipationsByClubAndStatut(int clubId, String statut) throws SQLException {
-        List<ParticipationMembre> participations = new ArrayList<>();
-        String query = "SELECT * FROM participation_membre WHERE club_id = ? AND statut = ?";
-
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setInt(1, clubId);
-            pst.setString(2, statut);
-
-            try (ResultSet rs = pst.executeQuery()) {
-                while (rs.next()) {
-                    participations.add(mapResultSetToParticipation(rs));
-                }
+    public List<User> getAcceptedMembersByClubId(int clubId) throws SQLException {
+        List<User> members = new ArrayList<>();
+        String query = "SELECT u.* FROM user u " +
+                      "INNER JOIN participation_membre pm ON u.id = pm.user_id " +
+                      "WHERE pm.club_id = ? AND pm.statut = 'accepte' " +
+                      "ORDER BY u.nom, u.prenom";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, clubId);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                User user = userService.extractUserFromResultSet(rs);
+                members.add(user);
             }
         }
-
-        return participations;
+        
+        return members;
     }
 
     /**
-     * Récupère toutes les participations d'un club
-     * 
-     * @param clubId id du club
-     * @return liste des participations
-     * @throws SQLException en cas d'erreur SQL
+     * Get count of pending requests for a club
      */
-    public List<ParticipationMembre> getParticipationsByClub(int clubId) throws SQLException {
-        List<ParticipationMembre> participations = new ArrayList<>();
-        String query = "SELECT * FROM participation_membre WHERE club_id = ?";
-
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setInt(1, clubId);
-
-            try (ResultSet rs = pst.executeQuery()) {
-                while (rs.next()) {
-                    participations.add(mapResultSetToParticipation(rs));
-                }
+    public int getPendingRequestsCountByClubId(int clubId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM participation_membre WHERE club_id = ? AND statut = 'en_attente'";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, clubId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1);
             }
         }
-
-        return participations;
+        
+        return 0;
     }
 
     /**
-     * Vérifie si un utilisateur est membre d'un club
-     * 
-     * @param userId id de l'utilisateur
-     * @param clubId id du club
-     * @return true si l'utilisateur est membre du club
-     * @throws SQLException en cas d'erreur SQL
+     * Get count of accepted requests for a club
      */
-    public boolean isUserMemberOfClub(int userId, int clubId) throws SQLException {
-        String query = "SELECT COUNT(*) FROM participation_membre WHERE user_id = ? AND club_id = ? AND statut = 'accepte'";
-
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setInt(1, userId);
-            pst.setInt(2, clubId);
-
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
+    public int getAcceptedRequestsCountByClubId(int clubId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM participation_membre WHERE club_id = ? AND statut = 'accepte'";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, clubId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1);
             }
         }
+        
+        return 0;
+    }
 
+    /**
+     * Get count of refused requests for a club
+     */
+    public int getRefusedRequestsCountByClubId(int clubId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM participation_membre WHERE club_id = ? AND statut = 'refuse'";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, clubId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        
+        return 0;
+    }
+
+    /**
+     * Get total count of all requests for a club
+     */
+    public int getTotalRequestsByClubId(int clubId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM participation_membre WHERE club_id = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, clubId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        
+        return 0;
+    }
+
+    /**
+     * Update participation status (accept or refuse)
+     */
+    public void modifier(ParticipationMembre participation) throws SQLException {
+        String query = "UPDATE participation_membre SET statut = ?, description = ? WHERE id = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, participation.getStatut());
+            stmt.setString(2, participation.getDescription());
+            stmt.setInt(3, participation.getId());
+            
+            stmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Create a new participation request
+     */
+    public void ajouter(ParticipationMembre participation) throws SQLException {
+        String query = "INSERT INTO participation_membre (date_request, statut, user_id, club_id, description) " +
+                      "VALUES (?, ?, ?, ?, ?)";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setTimestamp(1, Timestamp.valueOf(participation.getDateRequest()));
+            stmt.setString(2, participation.getStatut());
+            stmt.setInt(3, participation.getUser().getId());
+            stmt.setInt(4, participation.getClub().getId());
+            stmt.setString(5, participation.getDescription());
+            
+            stmt.executeUpdate();
+            
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                participation.setId(generatedKeys.getInt(1));
+            }
+        }
+    }
+
+    /**
+     * Delete a participation request
+     */
+    public void supprimer(int id) throws SQLException {
+        String query = "DELETE FROM participation_membre WHERE id = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
+    }
+
+    public boolean supprimer2(int id) throws SQLException {
+        String query = "DELETE FROM participation_membre WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        }
+    }
+
+    /**
+     * Get participation by ID
+     */
+    public ParticipationMembre getById(int id) throws SQLException {
+        String query = "SELECT * FROM participation_membre WHERE id = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return extractFromResultSet(rs);
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Check if user has already requested to join a club
+     */
+    public boolean hasUserRequestedClub(int userId, int clubId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM participation_membre WHERE user_id = ? AND club_id = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, clubId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        
         return false;
     }
 
-    private ParticipationMembre mapResultSetToParticipation(ResultSet rs) throws SQLException {
+    /**
+     * Get all participation requests for a user
+     */
+    public List<ParticipationMembre> getRequestsByUserId(int userId) throws SQLException {
+        List<ParticipationMembre> requests = new ArrayList<>();
+        String query = "SELECT * FROM participation_membre WHERE user_id = ? ORDER BY date_request DESC";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                ParticipationMembre participation = extractFromResultSet(rs);
+                requests.add(participation);
+            }
+        }
+        
+        return requests;
+    }
+
+    /**
+     * Extract ParticipationMembre from ResultSet
+     */
+    private ParticipationMembre extractFromResultSet(ResultSet rs) throws SQLException {
         ParticipationMembre participation = new ParticipationMembre();
+        
         participation.setId(rs.getInt("id"));
-
-        Timestamp timestamp = rs.getTimestamp("date_request");
-        participation.setDateRequest(timestamp.toLocalDateTime());
-
+        
+        Timestamp dateRequest = rs.getTimestamp("date_request");
+        if (dateRequest != null) {
+            participation.setDateRequest(dateRequest.toLocalDateTime());
+        }
+        
         participation.setStatut(rs.getString("statut"));
         participation.setDescription(rs.getString("description"));
-
-        // Charger l'utilisateur et le club
-        User user = userService.getById(rs.getInt("user_id"));
-        Club club = clubService.getById(rs.getInt("club_id"));
-
+        
+        // Load user
+        int userId = rs.getInt("user_id");
+        User user = userService.getUserById(userId);
         participation.setUser(user);
+        
+        // Load club
+        int clubId = rs.getInt("club_id");
+        Club club = clubService.getClubById1(clubId);
         participation.setClub(club);
-
+        
         return participation;
+    }
+
+    /**
+     * Get all participation requests
+     */
+    public List<ParticipationMembre> afficher() throws SQLException {
+        List<ParticipationMembre> requests = new ArrayList<>();
+        String query = "SELECT * FROM participation_membre ORDER BY date_request DESC";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                ParticipationMembre participation = extractFromResultSet(rs);
+                requests.add(participation);
+            }
+        }
+        
+        return requests;
+    }
+
+        public ArrayList<ParticipationMembre> getAllParticipants() throws SQLException {
+        ArrayList<ParticipationMembre> participants = new ArrayList<>();
+        String query = "SELECT * FROM participation_membre ORDER BY date_request DESC";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ParticipationMembre participation = extractFromResultSet(rs);
+                participants.add(participation);
+            }
+        }
+
+        return participants;
+    }
+
+    public ArrayList<ParticipationMembre> getParticipationsByClubAndStatut(int clubId, String statut) {
+        ArrayList<ParticipationMembre> participations = new ArrayList<>();
+        String query = "SELECT * FROM participation_membre WHERE club_id = ? AND statut = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, clubId);
+            stmt.setString(2, statut);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ParticipationMembre participation = extractFromResultSet(rs);
+                participations.add(participation);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return participations;
     }
 }

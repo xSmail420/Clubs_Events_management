@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -142,10 +143,31 @@ public class HomeController implements Initializable {
             // Navigate to the user's club page
             // Since ClubDetailsController might not exist or have the expected method,
             // we'll just navigate to clubs for now
-            navigateToClubs();
+            // navigateToClubs();
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/MyClubView.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) userNameLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            
         } else {
             // User doesn't have a club, navigate to clubs list
             navigateToClubs();
+        }
+    }
+
+     @FXML
+    private void showClubsDropdown() {
+        if (clubsDropdown != null) {
+            clubsDropdown.setVisible(true);
+            clubsDropdown.setManaged(true);
+        }
+    }
+    
+    @FXML
+    private void hideClubsDropdown() {
+        if (clubsDropdown != null) {
+            clubsDropdown.setVisible(false);
+            clubsDropdown.setManaged(false);
         }
     }
 
@@ -237,7 +259,7 @@ public class HomeController implements Initializable {
 
     @FXML
     private void viewEventDetails() throws IOException {
-        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/EventDetails.fxml"));
+        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/DetailsEvent.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) userProfileContainer.getScene().getWindow();
         stage.getScene().setRoot(root);

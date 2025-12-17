@@ -18,7 +18,7 @@
       spacing="10.0">
       
    <!-- Header -->
-   <VBox styleClass="header">
+   <VBox viewOrder="-1000" styleClass="header">
       <Label text="Edit Profile" textFill="WHITE">
          <font>
             <Font name="System Bold" size="18.0" />

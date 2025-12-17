@@ -256,7 +256,7 @@ public class PollManagementController implements Initializable {
     }
     @FXML
     public void navigateToClubs() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/itbs/views/ClubView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/itbs/views/ShowClubs.fxml"));
         Scene scene = new Scene(loader.load());
         Stage stage = (Stage) backButton.getScene().getWindow();
         stage.setScene(scene);
@@ -264,7 +264,7 @@ public class PollManagementController implements Initializable {
     }
     @FXML
     public void navigateToMyClub() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/itbs/views/ClubView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/itbs/views/MyClubView.fxml"));
         Scene scene = new Scene(loader.load());
         Stage stage = (Stage) backButton.getScene().getWindow();
         stage.setScene(scene);

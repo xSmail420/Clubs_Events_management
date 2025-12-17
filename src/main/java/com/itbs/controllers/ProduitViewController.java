@@ -168,14 +168,6 @@ public class ProduitViewController implements Initializable {
     }
     
     @FXML
-    public void navigateToClubs() throws IOException {
-        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/ShowClubs.fxml"));
-        Parent root = loader.load();
-        Stage stage = (Stage) productContainer.getScene().getWindow();
-        stage.getScene().setRoot(root);
-    }
-    
-    @FXML
     public void navigateToEvents() throws IOException {
         FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/AfficherEvent.fxml"));
         Parent root = loader.load();
@@ -206,12 +198,21 @@ public class ProduitViewController implements Initializable {
             clubsDropdown.setManaged(false);
         }
     }
+
+    @FXML
+    public void navigateToClubs() throws IOException {
+        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/ShowClubs.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) productContainer.getScene().getWindow();
+        stage.getScene().setRoot(root);
+    }
     
     @FXML
     private void navigateToMyClub() throws IOException {
-        // This would navigate to the user's club page
-        // For now, just navigate to clubs
-        navigateToClubs();
+        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/MyClubView.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) productContainer.getScene().getWindow();
+        stage.getScene().setRoot(root);
     }
     
     
@@ -349,7 +350,7 @@ FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/itbs/views/login
         // Add components to grid
         grid.add(new Label("Nom:"), 0, 0);
         grid.add(nomField, 1, 0);
-        grid.add(new Label("Prix (€):"), 0, 1);
+        grid.add(new Label("Prix (tnd):"), 0, 1);
         grid.add(prixField, 1, 1);
         grid.add(new Label("Quantité:"), 0, 2);
         grid.add(quantityField, 1, 2);
@@ -652,7 +653,7 @@ FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/itbs/views/login
             lblDescription.setText("");
         }
 
-        lblPrix.setText(String.format("%.2f €", produit.getPrix()));
+        lblPrix.setText(String.format("%.2f tnd", produit.getPrix()));
         lblQuantity.setText("Stock: " + produit.getQuantity());
 
         if (produit.getClub() != null && produit.getClub().getNomC() != null) {

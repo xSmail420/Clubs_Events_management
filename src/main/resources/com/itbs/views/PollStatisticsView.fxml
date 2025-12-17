@@ -26,7 +26,7 @@
       <VBox styleClass="header-section" BorderPane.alignment="CENTER">
          <children>
             <!-- Header with Navbar from home.fxml -->
-            <HBox styleClass="header" alignment="CENTER_LEFT" spacing="20">
+            <HBox viewOrder="-1000" styleClass="header" alignment="CENTER_LEFT" spacing="20">
                 <padding>
                     <Insets top="10" right="20" bottom="10" left="20"/>
                 </padding>

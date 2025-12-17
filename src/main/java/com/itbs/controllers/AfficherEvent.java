@@ -80,6 +80,13 @@ public class AfficherEvent implements Initializable {
     @FXML
     private Label userNameLabel;
 
+    @FXML
+    private StackPane clubsContainer;
+    @FXML
+    private Button clubsButton;
+    @FXML
+    private VBox clubsDropdown;
+
     private ServiceEvent serviceEvent;
     private List<Evenement> allEvents;
     private User currentUser; // Added for user profile
@@ -116,6 +123,11 @@ public class AfficherEvent implements Initializable {
         // Rendre le bouton visible seulement si l'utilisateur est un président
         addNewEventButton.setVisible(isPresident);
         addNewEventButton.setManaged(isPresident);
+
+         if (clubsDropdown != null) {
+                clubsDropdown.setVisible(false);
+                clubsDropdown.setManaged(false);
+            }
 
         // Set up search field action
         searchField.setOnAction(e -> handleSearch());
@@ -217,12 +229,41 @@ public class AfficherEvent implements Initializable {
         stage.getScene().setRoot(root);
     }
     @FXML
-    private void navigateToClubs() throws IOException {
+    public void navigateToMyClub() throws IOException {
+        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/MyClubView.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) userProfileContainer.getScene().getWindow();
+        stage.getScene().setRoot(root);
+    }
+
+    @FXML
+    public void navigateToClubs() throws IOException {
         FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/ShowClubs.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) userProfileContainer.getScene().getWindow();
         stage.getScene().setRoot(root);
     }
+
+    @FXML
+    private void showClubsDropdown() {
+        if (clubsDropdown != null) {
+            clubsDropdown.setVisible(true);
+            clubsDropdown.setManaged(true);
+        }
+    }
+    
+    @FXML
+    private void hideClubsDropdown() {
+        if (clubsDropdown != null) {
+            clubsDropdown.setVisible(false);
+            clubsDropdown.setManaged(false);
+        }
+    }
+
+
+
+
+
     /**
      * Handle user logout
      * Added method from HomeController integration

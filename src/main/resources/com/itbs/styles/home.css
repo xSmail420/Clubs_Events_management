@@ -403,6 +403,14 @@
 .nav-dropdown-menu {
     -fx-opacity: 0.98;
     -fx-scale-y: 0.98;
+    /* make the dropdown always on top of other elements */
+    -fx-view-order: -1000;
+    -fx-transition: all 0.2s ease-in-out;
+    -fx-scale-y: 0;
+    -fx-scale-y-origin: top;
+    -fx-opacity: 0;
+    -fx-scale-y: 1;
+    -fx-opacity: 1;
 }
 
 .polls-item:hover {
@@ -435,6 +443,9 @@ Group {
 
 .nav-container {
     -fx-padding: 0 20;
+    /* always on top */
+    -fx-view-order: -1500;
+    -fx-z-index: 1000;
 }
 
 .nav-button {
@@ -970,3 +981,16 @@ Group {
 .create-club-button:hover {
     -fx-background-color: #5000C9;
 } 
+
+.nav-dropdown-menu {
+    -fx-background-color: white;
+    -fx-background-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.1, 0, 5);
+    -fx-padding: 25px;
+    -fx-spacing: 20;
+    -fx-border-color: rgba(74, 144, 226, 0.1);
+    -fx-border-width: 1px;
+    -fx-border-radius: 16px;
+    /* z index 1000 html alternative is -1000 */
+    -fx-view-order: -1000;
+}

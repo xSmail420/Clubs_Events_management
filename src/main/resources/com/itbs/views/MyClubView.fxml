@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:id="contentArea"
+            fx:controller="com.itbs.controllers.MyClubController"
+            stylesheets="@../styles/uniclubs.css">
+
+    <!-- Left Sidebar -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="250" spacing="10">
+            <padding>
+                <Insets top="20" right="15" bottom="20" left="15"/>
+            </padding>
+
+            <!-- Logo/Header -->
+            <VBox alignment="CENTER" spacing="10" styleClass="sidebar-header">
+                <Text text="UNICLUBS" styleClass="logo-text"/>
+                <Label text="President Dashboard" styleClass="subtitle-text"/>
+                <Separator/>
+            </VBox>
+
+            <!-- President Info -->
+            <VBox alignment="CENTER" spacing="5" styleClass="user-info-box">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label fx:id="presidentNameLabel" styleClass="user-name-label" text="President Name"/>
+                <Label text="Club President" styleClass="user-role-label"/>
+            </VBox>
+
+            <!-- Club Stats Dashboard -->
+            <VBox spacing="10" styleClass="stats-box">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label text="Club Overview" styleClass="section-title"/>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Club:" styleClass="stat-label"/>
+                    <Label fx:id="clubNameLabel" styleClass="stat-value" text="Club Name"/>
+                </HBox>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Points:" styleClass="stat-label"/>
+                    <Label fx:id="clubPointsLabel" styleClass="stat-value" text="0"/>
+                </HBox>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Members:" styleClass="stat-label"/>
+                    <Label fx:id="clubMembersCountLabel" styleClass="stat-value" text="0"/>
+                </HBox>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Pending:" styleClass="stat-label"/>
+                    <Label fx:id="pendingRequestsCountLabel" styleClass="stat-value" text="0"/>
+                </HBox>
+            </VBox>
+
+            <Separator/>
+
+            <!-- Navigation Menu -->
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+                <Button fx:id="myClubButton" text="📊 My Club" onAction="#showMyClub" 
+                        styleClass="sidebar-button" maxWidth="Infinity"/>
+                <Button fx:id="eventsButton" text="📅 Events" 
+                        styleClass="sidebar-button" maxWidth="Infinity"/>
+                <Button fx:id="productsButton" text="🛍️ Products" 
+                        styleClass="sidebar-button" maxWidth="Infinity"/>
+                <Button fx:id="pollsButton" text="📊 Polls" 
+                        styleClass="sidebar-button" maxWidth="Infinity"/>
+            </VBox>
+
+            <Separator/>
+
+            <!-- Bottom Actions -->
+            <VBox spacing="5">
+                <Button fx:id="profileButton" text="👤 Profile" onAction="#navigateToProfile"
+                        styleClass="sidebar-button-secondary" maxWidth="Infinity"/>
+                <Button fx:id="logoutButton" text="🚪 Logout" onAction="#handleLogout"
+                        styleClass="sidebar-button-danger" maxWidth="Infinity"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- Main Content Area -->
+    <center>
+        <VBox spacing="20">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label fx:id="contentTitle" text="My Club Management" styleClass="page-title"/>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Tabs -->
+            <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                
+                <!-- Club Details Tab -->
+                <Tab text="Détails du Club">
+                    <ScrollPane fitToWidth="true" fitToHeight="true">
+                        <VBox spacing="20">
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="20"/>
+                            </padding>
+
+                            <Label text="Informations du Club" styleClass="section-title"/>
+
+                            <GridPane hgap="15" vgap="15">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="30"/>
+                                    <ColumnConstraints percentWidth="70"/>
+                                </columnConstraints>
+
+                                <!-- Row 0 -->
+                                <Label text="Nom du Club:" GridPane.columnIndex="0" GridPane.rowIndex="0" 
+                                       styleClass="form-label"/>
+                                <TextField fx:id="nomCField" GridPane.columnIndex="1" GridPane.rowIndex="0" 
+                                          promptText="Nom du club" styleClass="form-field"/>
+
+                                <!-- Row 1 -->
+                                <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1" 
+                                       styleClass="form-label"/>
+                                <TextArea fx:id="descriptionField" GridPane.columnIndex="1" GridPane.rowIndex="1" 
+                                         promptText="Description du club" prefRowCount="4" styleClass="form-field" 
+                                         wrapText="true"/>
+
+                                <!-- Row 2 -->
+                                <Label text="Logo URL:" GridPane.columnIndex="0" GridPane.rowIndex="2" 
+                                       styleClass="form-label"/>
+                                <TextField fx:id="logoField" GridPane.columnIndex="1" GridPane.rowIndex="2" 
+                                          promptText="URL du logo" styleClass="form-field"/>
+
+                                <!-- Row 3 -->
+                                <Label text="Image URL:" GridPane.columnIndex="0" GridPane.rowIndex="3" 
+                                       styleClass="form-label"/>
+                                <TextField fx:id="imageField" GridPane.columnIndex="1" GridPane.rowIndex="3" 
+                                          promptText="URL de l'image" styleClass="form-field"/>
+
+                                <!-- Row 4 -->
+                                <Label text="Date de Création:" GridPane.columnIndex="0" GridPane.rowIndex="4" 
+                                       styleClass="form-label"/>
+                                <Label fx:id="dateCreationLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" 
+                                       text="-" styleClass="info-label"/>
+
+                                <!-- Row 5 -->
+                                <Label text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="5" 
+                                       styleClass="form-label"/>
+                                <Label fx:id="statusLabel" GridPane.columnIndex="1" GridPane.rowIndex="5" 
+                                       text="-" styleClass="info-label"/>
+
+                                <!-- Row 6 -->
+                                <Label text="Points:" GridPane.columnIndex="0" GridPane.rowIndex="6" 
+                                       styleClass="form-label"/>
+                                <Label fx:id="pointsLabel" GridPane.columnIndex="1" GridPane.rowIndex="6" 
+                                       text="-" styleClass="info-label"/>
+                            </GridPane>
+
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Button text="💾 Sauvegarder les modifications" onAction="#updateClubDetails" 
+                                        styleClass="primary-button"/>
+                            </HBox>
+                        </VBox>
+                    </ScrollPane>
+                </Tab>
+
+                <!-- Membership Requests Tab -->
+                <Tab text="Demandes d'Adhésion">
+                    <SplitPane dividerPositions="0.4">
+                        <VBox spacing="15">
+                            <padding>
+                                <Insets top="20" right="15" bottom="20" left="20"/>
+                            </padding>
+
+                            <Label text="Demandes en Attente" styleClass="section-title"/>
+                            
+                            <ListView fx:id="pendingRequestsList" VBox.vgrow="ALWAYS" 
+                                     styleClass="custom-list-view"/>
+
+                            <HBox spacing="10" alignment="CENTER">
+                                <Button fx:id="acceptRequestButton" text="✅ Accepter" 
+                                        onAction="#acceptRequest" styleClass="success-button" disable="true"/>
+                                <Button fx:id="refuseRequestButton" text="❌ Refuser" 
+                                        onAction="#refuseRequest" styleClass="danger-button" disable="true"/>
+                            </HBox>
+                        </VBox>
+
+                        <VBox spacing="15">
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="15"/>
+                            </padding>
+
+                            <Label text="Détails de la Demande" styleClass="section-title"/>
+                            
+                            <TextArea fx:id="requestDetailsArea" editable="false" wrapText="true" 
+                                     VBox.vgrow="ALWAYS" styleClass="details-area" 
+                                     promptText="Sélectionnez une demande pour voir les détails"/>
+                        </VBox>
+                    </SplitPane>
+                </Tab>
+
+                <!-- Members Tab -->
+                <Tab text="Membres">
+                    <SplitPane dividerPositions="0.5">
+                        <VBox spacing="15">
+                            <padding>
+                                <Insets top="20" right="15" bottom="20" left="20"/>
+                            </padding>
+
+                            <Label text="Liste des Membres" styleClass="section-title"/>
+                            
+                            <TextField fx:id="searchMembersField" promptText="🔍 Rechercher un membre..." 
+                                      styleClass="search-field"/>
+                            
+                            <ListView fx:id="membersList" VBox.vgrow="ALWAYS" 
+                                     styleClass="custom-list-view"/>
+                        </VBox>
+
+                        <VBox spacing="15">
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="15"/>
+                            </padding>
+
+                            <Label text="Informations du Membre" styleClass="section-title"/>
+                            
+                            <VBox spacing="10">
+                                <HBox spacing="10">
+                                    <Label text="Nom:" styleClass="info-label-bold" prefWidth="100"/>
+                                    <Label fx:id="selectedMemberNameLabel" text="-" styleClass="info-label"/>
+                                </HBox>
+                                
+                                <HBox spacing="10">
+                                    <Label text="Email:" styleClass="info-label-bold" prefWidth="100"/>
+                                    <Label fx:id="selectedMemberEmailLabel" text="-" styleClass="info-label"/>
+                                </HBox>
+                                
+                                <HBox spacing="10">
+                                    <Label text="Téléphone:" styleClass="info-label-bold" prefWidth="100"/>
+                                    <Label fx:id="selectedMemberPhoneLabel" text="-" styleClass="info-label"/>
+                                </HBox>
+                                
+                                <HBox spacing="10">
+                                    <Label text="Rôle:" styleClass="info-label-bold" prefWidth="100"/>
+                                    <Label fx:id="selectedMemberRoleLabel" text="-" styleClass="info-label"/>
+                                </HBox>
+                            </VBox>
+                        </VBox>
+                    </SplitPane>
+                </Tab>
+
+                <!-- Statistics Tab -->
+                <Tab text="Statistiques">
+                    <ScrollPane fitToWidth="true" fitToHeight="true">
+                        <VBox spacing="25">
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="20"/>
+                            </padding>
+
+                            <Label text="Statistiques du Club" styleClass="section-title"/>
+
+                            <!-- Stats Cards -->
+                            <GridPane hgap="20" vgap="20">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="25"/>
+                                    <ColumnConstraints percentWidth="25"/>
+                                    <ColumnConstraints percentWidth="25"/>
+                                    <ColumnConstraints percentWidth="25"/>
+                                </columnConstraints>
+
+                                <!-- Total Members Card -->
+                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" 
+                                     styleClass="stat-card" spacing="10" alignment="CENTER">
+                                    <padding>
+                                        <Insets top="15" right="15" bottom="15" left="15"/>
+                                    </padding>
+                                    <Label text="👥" style="-fx-font-size: 30px;"/>
+                                    <Label text="Membres Actifs" styleClass="stat-card-label"/>
+                                    <Label fx:id="totalMembersLabel" text="0" styleClass="stat-card-value"/>
+                                </VBox>
+
+                                <!-- Accepted Requests Card -->
+                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" 
+                                     styleClass="stat-card" spacing="10" alignment="CENTER">
+                                    <padding>
+                                        <Insets top="15" right="15" bottom="15" left="15"/>
+                                    </padding>
+                                    <Label text="✅" style="-fx-font-size: 30px;"/>
+                                    <Label text="Demandes Acceptées" styleClass="stat-card-label"/>
+                                    <Label fx:id="acceptedRequestsLabel" text="0" styleClass="stat-card-value"/>
+                                </VBox>
+
+                                <!-- Refused Requests Card -->
+                                <VBox GridPane.columnIndex="2" GridPane.rowIndex="0" 
+                                     styleClass="stat-card" spacing="10" alignment="CENTER">
+                                    <padding>
+                                        <Insets top="15" right="15" bottom="15" left="15"/>
+                                    </padding>
+                                    <Label text="❌" style="-fx-font-size: 30px;"/>
+                                    <Label text="Demandes Refusées" styleClass="stat-card-label"/>
+                                    <Label fx:id="refusedRequestsLabel" text="0" styleClass="stat-card-value"/>
+                                </VBox>
+
+                                <!-- Pending Requests Card -->
+                                <VBox GridPane.columnIndex="3" GridPane.rowIndex="0" 
+                                     styleClass="stat-card" spacing="10" alignment="CENTER">
+                                    <padding>
+                                        <Insets top="15" right="15" bottom="15" left="15"/>
+                                    </padding>
+                                    <Label text="⏳" style="-fx-font-size: 30px;"/>
+                                    <Label text="En Attente" styleClass="stat-card-label"/>
+                                    <Label fx:id="pendingRequestsLabel" text="0" styleClass="stat-card-value"/>
+                                </VBox>
+                            </GridPane>
+
+                            <!-- Charts -->
+                            <HBox spacing="20" VBox.vgrow="ALWAYS">
+                                <!-- Pie Chart -->
+                                <VBox spacing="10" HBox.hgrow="ALWAYS" styleClass="chart-container">
+                                    <Label text="Répartition des Demandes" styleClass="chart-title"/>
+                                    <PieChart fx:id="requestsStatusChart" VBox.vgrow="ALWAYS" 
+                                             legendSide="BOTTOM"/>
+                                </VBox>
+
+                                <!-- Bar Chart -->
+                                <VBox spacing="10" HBox.hgrow="ALWAYS" styleClass="chart-container">
+                                    <Label text="Activité du Club" styleClass="chart-title"/>
+                                    <BarChart fx:id="memberActivityChart" VBox.vgrow="ALWAYS">
+                                        <xAxis>
+                                            <NumberAxis side="BOTTOM" label="Valeur"/>
+                                        </xAxis>
+                                        <yAxis>
+                                            <CategoryAxis side="LEFT"/>
+                                        </yAxis>
+                                    </BarChart>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </ScrollPane>
+                </Tab>
+            </TabPane>
+        </VBox>
+    </center>
+</BorderPane>

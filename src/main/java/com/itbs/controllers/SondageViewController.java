@@ -122,6 +122,12 @@ public class SondageViewController implements Initializable {
     private Button createPollButton;
     @FXML
     private Button viewAllPollsButton;
+    @FXML
+    private StackPane clubsContainer;
+    @FXML
+    private Button clubsButton;
+    @FXML
+    private VBox clubsDropdown;
 
     // Services
     private final SondageService sondageService = new SondageService();
@@ -206,6 +212,12 @@ public class SondageViewController implements Initializable {
             // Check if user is a club president
             Club userClub = clubService.findByPresident(currentUser.getId());
             boolean isPresident = userClub != null;
+
+
+            if (clubsDropdown != null) {
+                clubsDropdown.setVisible(false);
+                clubsDropdown.setManaged(false);
+            }
 
             // Show/hide elements based on user role
             VBox pollCreationContainer = (VBox) viewAllPollsButton.getParent().lookup(".poll-creation-container");
@@ -1964,7 +1976,7 @@ public class SondageViewController implements Initializable {
                         "success");
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("Error sending notification emails: " + e.getMessage());
             e.printStackTrace();
             showToast(
@@ -1990,7 +2002,7 @@ public class SondageViewController implements Initializable {
 
     @FXML
     public void navigateToMyClub() throws IOException {
-        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/Clubs.fxml"));
+        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/MyClubView.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) sondagesContainer.getScene().getWindow();
         stage.getScene().setRoot(root);
@@ -2002,6 +2014,22 @@ public class SondageViewController implements Initializable {
         Parent root = loader.load();
         Stage stage = (Stage) sondagesContainer.getScene().getWindow();
         stage.getScene().setRoot(root);
+    }
+
+    @FXML
+    private void showClubsDropdown() {
+        if (clubsDropdown != null) {
+            clubsDropdown.setVisible(true);
+            clubsDropdown.setManaged(true);
+        }
+    }
+    
+    @FXML
+    private void hideClubsDropdown() {
+        if (clubsDropdown != null) {
+            clubsDropdown.setVisible(false);
+            clubsDropdown.setManaged(false);
+        }
     }
 
     @FXML

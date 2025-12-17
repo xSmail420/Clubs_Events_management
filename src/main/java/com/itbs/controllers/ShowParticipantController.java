@@ -187,4 +187,9 @@ public class ShowParticipantController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public ArrayList<ParticipationMembre> getAllParticipants() {
+        return new ArrayList<>(allAcceptedParticipants);
+    }
+
 }

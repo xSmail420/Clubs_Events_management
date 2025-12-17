@@ -566,7 +566,7 @@ public class EditPollModalController implements Initializable {
                 System.out.println(String.format("Notification emails sent to %d club members", emailsSent));
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("Error sending notification emails: " + e.getMessage());
             e.printStackTrace();
         }
@@ -630,7 +630,7 @@ public class EditPollModalController implements Initializable {
                 System.out.println(String.format("Poll update emails sent to %d club members", emailsSent));
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("Error sending poll update emails: " + e.getMessage());
             e.printStackTrace();
         }

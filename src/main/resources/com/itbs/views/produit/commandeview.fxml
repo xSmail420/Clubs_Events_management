@@ -10,7 +10,7 @@
       styleClass="main-container" stylesheets="@../../styles/home.css">
 
     <!-- Header Section -->
-    <HBox styleClass="header" alignment="CENTER_LEFT" spacing="20">
+    <HBox viewOrder="-1000" styleClass="header" alignment="CENTER_LEFT" spacing="20">
         <padding>
             <Insets top="15" right="25" bottom="15" left="25"/>
         </padding>
@@ -22,7 +22,23 @@
         <HBox spacing="25" alignment="CENTER" HBox.hgrow="ALWAYS" styleClass="nav-container">
             <Button text="Home" styleClass="nav-button" onAction="#navigateToHome"/>
             <Button text="Polls" styleClass="nav-button" onAction="#navigateToPolls"/>
-            <Button text="Clubs" styleClass="nav-button" onAction="#navigateToClubs"/>
+                                    <!-- Clubs dropdown container -->
+                        <StackPane fx:id="clubsContainer" styleClass="nav-dropdown-container" onMouseExited="#hideClubsDropdown">
+                            <Button fx:id="clubsButton" text="Clubs" styleClass="nav-button" onMouseEntered="#showClubsDropdown"/>
+                            
+                            <!-- Clubs Dropdown Menu - Initially hidden -->
+                            <VBox fx:id="clubsDropdown" styleClass="nav-dropdown-menu" visible="false" managed="false" onMouseEntered="#showClubsDropdown">
+                                <HBox fx:id="clubMembersItem" styleClass="dropdown-item" onMouseClicked="#navigateToClubs">
+                                    <Label text="👥" styleClass="dropdown-item-icon"/>
+                                    <Label text="Club Management" styleClass="dropdown-item-text"/>
+                                </HBox>
+                                <Separator styleClass="dropdown-divider"/>
+                                <HBox styleClass="dropdown-item" onMouseClicked="#navigateToMyClub">
+                                    <Label text="🏆" styleClass="dropdown-item-icon"/>
+                                    <Label text="My Club" styleClass="dropdown-item-text"/>
+                                </HBox>
+                            </VBox>
+                        </StackPane>
             <Button text="Events" styleClass="nav-button" onAction="#navigateToEvents"/>
             <Button text="Products" styleClass="nav-button" onAction="#navigateToProducts"/>
             <Button text="Competition" styleClass="nav-button" onAction="#navigateToCompetition"/>
@@ -144,17 +160,17 @@
                             </columnConstraints>
                             
                             <Label text="Subtotal:" style="-fx-font-size: 16px; -fx-text-fill: #6c757d;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                            <Label fx:id="subtotalLabel" text="€0.00" style="-fx-font-size: 16px; -fx-text-fill: #2c3e50;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                            <Label fx:id="subtotalLabel" text="tnd0.00" style="-fx-font-size: 16px; -fx-text-fill: #2c3e50;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
                             
                             <Label text="Shipping:" style="-fx-font-size: 16px; -fx-text-fill: #6c757d;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                            <Label fx:id="shippingLabel" text="€0.00" style="-fx-font-size: 16px; -fx-text-fill: #2c3e50;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                            <Label fx:id="shippingLabel" text="tnd0.00" style="-fx-font-size: 16px; -fx-text-fill: #2c3e50;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
                             
                             <HBox alignment="CENTER" GridPane.rowIndex="2" GridPane.columnSpan="2">
                                 <Separator HBox.hgrow="ALWAYS" style="-fx-background-color: #e0e0e0;"/>
                             </HBox>
                             
                             <Label text="Total:" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                            <Label fx:id="totalLabel" text="€0.00" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #6200EE;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                            <Label fx:id="totalLabel" text="tnd0.00" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #6200EE;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
                         </GridPane>
                         
                         <Button fx:id="checkoutButton" text="Proceed to Checkout" prefWidth="Infinity"

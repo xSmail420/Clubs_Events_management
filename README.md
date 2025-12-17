@@ -109,10 +109,10 @@ cd itbs-club-hub
 bash
 # Créer la base de données
 mysql -u root -p
-CREATE DATABASE dbpi;
+CREATE DATABASE itbs_clubs_events;
 
 # Importer le script SQL
-mysql -u root -p dbpi < database.sql
+mysql -u root -p itbs_clubs_events < database.sql
 
 
 3. **Configurer le fichier config.properties**
@@ -134,7 +134,7 @@ mvn javafx:run
 1. Lancer l'application
 2. Se connecter avec les identifiants administrateur par défaut :
    - Email : admin@test.com
-   - Mot de passe : P@ssw0rd
+   - Mot de passe : @Passw0rd
 
 ### Fonctionnalités Principales
 - *Gestion des Clubs* : Créer, modifier et gérer les clubs
