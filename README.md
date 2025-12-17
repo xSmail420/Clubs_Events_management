@@ -13,11 +13,6 @@
 - [Prérequis](#prérequis)
 - [Installation](#installation)
 - [Utilisation](#utilisation)
-- [Intégration avec l'Application Web](#intégration-avec-lapplication-web)
-- [Contribution](#contribution)
-- [Équipe de Développement](#équipe-de-développement)
-- [Licence](#licence)
-- [Remerciements](#remerciements)
 
 ## 📝 Description
 UNICLUBS est une application de bureau développée en JavaFX qui permet la gestion complète des clubs, événements, sondages et compétitions au sein de l'école ITBS.
