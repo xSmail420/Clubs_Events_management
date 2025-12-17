@@ -20,7 +20,7 @@
 - [Remerciements](#remerciements)
 
 ## 📝 Description
-UNICLUBS est une application de bureau développée en JavaFX qui permet la gestion complète des clubs, événements, sondages et compétitions au sein de l'école ITBS. Cette application fait partie d'un système intégré qui comprend également une interface web développée avec Symfony.
+UNICLUBS est une application de bureau développée en JavaFX qui permet la gestion complète des clubs, événements, sondages et compétitions au sein de l'école ITBS.
 
 ### 🎯 Objectif
 Faciliter et centraliser la gestion des activités parascolaires au sein de l'école ITBS en offrant une plateforme intuitive et complète.
@@ -106,7 +106,7 @@ Faciliter et centraliser la gestion des activités parascolaires au sein de l'é
 
 1. *Cloner le repository*
 bash
-git clone https://github.com/OussemaKachti/Projet_Integre_Desktop.git
+git clone ...
 cd itbs-club-hub
 
 
@@ -139,7 +139,7 @@ mvn javafx:run
 1. Lancer l'application
 2. Se connecter avec les identifiants administrateur par défaut :
    - Email : admin@test.com
-   - Mot de passe : Lina-lanouna1818
+   - Mot de passe : P@ssw0rd
 
 ### Fonctionnalités Principales
 - *Gestion des Clubs* : Créer, modifier et gérer les clubs
@@ -152,90 +152,3 @@ mvn javafx:run
   - Traduction automatique
 - *Compétitions* : Gérer les compétitions et suivre les scores
 - *Produits* : Gérer le catalogue des produits, les stocks et les commandes
-
-## 🔗 Intégration avec l'Application Web
-
-Cette application desktop est intégrée avec une application web Symfony, permettant une synchronisation en temps réel des données entre les deux plateformes. Les principales fonctionnalités d'intégration incluent :
-
-- 🔄 Synchronisation des comptes utilisateurs
-- 📊 Partage des données des événements
-- 📝 Synchronisation des sondages et analyses IA
-- 🏆 Mise à jour en temps réel des compétitions
-- 🤖 Partage des analyses et statistiques IA
-
-## 🤝 Contribution
-Nous accueillons et apprécions toute contribution à UNICLUBS ! Voici comment vous pouvez contribuer :
-
-1. *Fork* le projet
-2. Créez votre branche de fonctionnalité (git checkout -b feature/AmazingFeature)
-3. Committez vos changements (git commit -m 'Add some AmazingFeature')
-4. Push vers la branche (git push origin feature/AmazingFeature)
-5. Ouvrez une Pull Request
-
-### Guide de Style
-- Suivez les conventions de nommage Java
-- Documentez les nouvelles fonctionnalités
-- Ajoutez des tests unitaires pour les nouvelles fonctionnalités
-
-## 👥 Équipe de Développement
-- 👨‍💻 [Oussema KACHTI] - Team Lead & System Architect
-  - Architecture globale du projet et intégration des modules
-  - Développement du module Sondages (Frontend/Backend)
-  - Intégration des technologies IA (OpenAI, Hugging Face)
-  - Gestion du versioning et Git
-  - Conception des diagrammes UML
-  - Tests et corrections des modules
-  - Documentation technique
-
-- 👩‍💻 [Nour Balti] - Full Stack Developer - Module Utilisateurs
-  - Système d'authentification et autorisation
-  - Gestion des profils utilisateurs
-  - Système de vérification par email
-  - Gestion des rôles et permissions
-  - API des utilisateurs et intégration
-
-- 👨‍💻 [Mariem Trabelsi] - Full Stack Developer - Module Clubs
-  - Développement du système de gestion des clubs
-  - Interface d'administration des clubs
-  - Gestion des membres et des rôles
-  - Dashboard des clubs
-  - API des clubs et intégration
-
-- 👩‍💻 [Imen Rzigui] - Full Stack Developer - Module Événements
-  - Système de gestion des événements
-  - Interface de planification
-  - Gestion des participations
-  - Système de notification
-  - API des événements et intégration
-
-- 👨‍💻 [Sirine Wahbi] - Full Stack Developer - Module Produits
-  - Système de gestion des produits
-  - Interface e-commerce
-  - Gestion des stocks
-  - Système de commandes
-  - API des produits et intégration
-
-- 👩‍💻 [Yassine Jomni] - Full Stack Developer - Module Compétitions
-  - Système de gestion des compétitions
-  - Interface des tournois
-  - Gestion des scores
-  - Système de classement
-  - API des compétitions et intégration
-
-### 🤝 Collaboration et Intégration
-Chaque membre de l'équipe a développé son module de manière autonome (frontend et backend), tandis que le Team Lead a :
-- ✅ Assuré la cohérence entre les modules
-- 🔄 Géré l'intégration continue
-- 🧪 Effectué les tests d'intégration
-- 🤖 Implémenté les fonctionnalités IA
-- 📊 Conçu l'architecture globale
-- 📝 Supervisé la documentation
-
-## 📄 Licence
-Ce projet est sous licence MIT - voir le fichier [LICENSE.md](LICENSE.md) pour plus de détails.
-
-## 🙏 Remerciements
-- 🎓 ITBS pour le support et l'opportunité
-- 👨‍🏫 Les encadrants pour leur guidance
-- 🤝 Tous les contributeurs au projet
-- 📚 La communauté open source pour les outils et bibliothèques utilisés
